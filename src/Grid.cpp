@@ -23,13 +23,25 @@ Grid::~Grid()
 
 void Grid::Render(){
     SDL_SetRenderDrawColor(Window::GetRenderer(), color.r, color.g, color.b, color.a);
-    for(int i = 0; i < WINDOW_WIDTH / w + 1; i++){
-        SDL_RenderDrawLine(Window::GetRenderer(), i*w, 0, i*h, WINDOW_HEIGHT);
-        SDL_RenderDrawLine(Window::GetRenderer(), 0, i*w, WINDOW_WIDTH, i*h);
+    for(int i = 0; i < w / dw +1; i++){             //( x1 , y1 ) ( x2 , y2 )
+        SDL_RenderDrawLine(Window::GetRenderer(), i*dw + x, y, i*dh + x, h + y);
+    }
+    for(int i = 0; i < h / dh +1; i++){          //( x1 , y1 ) ( x2 , y2 )
+        SDL_RenderDrawLine(Window::GetRenderer(), x, i*dw + y, w + x, i*dh + y);
     }
 }
 
-void Grid::Update(){
+void Grid::Update(int dt){
+    if(InputHandler::GetKey() == SDLK_LEFT){
+            x -= dt;
+            if(x < 0) x += 32;
+    }
+    if(InputHandler::GetKey() == SDLK_RIGHT){
+            x += dt;
+            if(x > 32) x -= 32;
+    }
+
+
     if(InputHandler::GetKey() == SDLK_1){
         if(gridShow){
             color.r = 0;
@@ -46,9 +58,14 @@ void Grid::Update(){
     }
 }
 
-void Grid::SetSize(int w, int h){
-    this->w = w;
-    this->h = h;
+void Grid::SetDimensions(int dw, int dh, int x, int y, int w, int h){
+    this->dw = dw;//lateral do quadrado
+    this->dh = dh;//altura do quadrado
+    this->x = x;//comecando em x
+    this->y = y;//comecando em y
+    this->w = w;//tamanho da linha
+    this->h = h;//tamanho da linha
+
 }
 
 void Grid::SetGridColor(int r, int g, int b, int a){

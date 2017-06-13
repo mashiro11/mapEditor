@@ -18,7 +18,7 @@ class MapObject
         MapObject(string path, int x = 0, int y = 0, int code = 0);
         virtual ~MapObject();
         void Render();
-        void Update();
+        void Update(int dt = 0);
         int GetWidth();
         int GetHeight();
         int GetX();

@@ -21,10 +21,21 @@ int main(int argc, char** argv){
     MapComponents::LoadComponents();
     MapComponents::ConfigImages(TILEDIM);
     MapComponents::SetGridSize(MapComponents::GetObject(0)->GetWidth(), MapComponents::GetObject(0)->GetHeight());
+    int speed = 1;
     while(!SDL_QuitRequested()){
         Window::Clear();
         InputHandler::Update();
-        MapComponents::Show();
+        if(InputHandler::GetKey() == SDLK_UP){
+                speed += 1;
+                if(speed > 10) speed = 10;
+                cout << "movingspeed = " << speed << endl;
+        }
+        if(InputHandler::GetKey() == SDLK_DOWN){
+                speed -= 1;
+                if(speed < 1) speed = 1;
+                cout << "movingspeed = " << speed << endl;
+        }
+        MapComponents::Show(32*speed);
         Window::Render();
     }
     Window::Finish();

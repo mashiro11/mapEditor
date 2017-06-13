@@ -2,7 +2,9 @@
 
 vector<MapObject*> MapComponents::mapObjects;
 vector<vector<int>*> MapComponents::gameMap;
-Grid MapComponents::grid;
+Grid MapComponents::gridMenu;
+Grid MapComponents::gridMap;
+int MapComponents::origin = 0;
 
 MapComponents::~MapComponents()
 {
@@ -76,35 +78,45 @@ void MapComponents::LoadComponents(){
         AddMapObject(tmp);
         gameMap[MAP_HEIGHT-1]->at(i) = 1;
     }
+    gridMenu.SetGridColor(0xff, 0, 0);
+    gridMenu.SetDimensions(32, 32, 0, 0, WINDOW_WIDTH, 32*3);
 }
 
 void MapComponents::SetGridSize(int w, int h){
-    grid.SetSize(w, h);
+    //gridMap.SetDimensions(w, h);
+    gridMap.SetDimensions(w, h, 0, 32*3, WINDOW_WIDTH, WINDOW_HEIGHT - 32*3);
 }
 
-void MapComponents::Show(){
-    grid.Update();
-    grid.Render();
+void MapComponents::Show(int dt){
+    if(InputHandler::GetKey() == SDLK_LEFT) origin += dt;
+    if(InputHandler::GetKey() == SDLK_RIGHT) origin -= dt;
+
+    gridMap.Update(dt);
+    gridMap.Render();
+    gridMenu.Update();
+    gridMenu.Render();
     for(unsigned int i = 0; i < mapObjects.size(); i++){
-        mapObjects[i]->Update();
+        mapObjects[i]->Update(dt);
         mapObjects[i]->Render();
         int ypos;
         ypos = mapObjects[i]->GetY() - 32*3;
         if(mapObjects[i]->GetStatus() == "delete"){
-             if(ypos > 0)gameMap[ ypos/32 ]->at( mapObjects[i]->GetX()/32 ) = 0;
+             if(ypos > 0)gameMap[ ypos/32 ]->at( (mapObjects[i]->GetX()+origin)/32 ) = 0;
              mapObjects.erase(mapObjects.begin() + i);
         }else if(mapObjects[i]->GetStatus() == "selected"){
-            if(ypos > 0)gameMap[ ypos/32 ]->at( mapObjects[i]->GetX()/32 ) = 0;
+            if(ypos > 0)gameMap[ ypos/32 ]->at( (mapObjects[i]->GetX()+origin)/32 ) = 0;
         }else if(mapObjects[i]->GetStatus() == "placed"){
-            if(ypos > 0)gameMap[ ypos/32 ]->at( mapObjects[i]->GetX()/32 ) = mapObjects[i]->GetCode();
-            cout << mapObjects[i]->GetCode() << endl;
+            if(ypos > 0)gameMap[ ypos/32 ]->at( (mapObjects[i]->GetX()+origin)/32 ) = mapObjects[i]->GetCode();
         }
     }
     if(InputHandler::GetKey() == SDLK_p){
         PrintMapMatrix();
     }
     if(InputHandler::GetKey() == SDLK_RETURN){
-        MapToXML();
+        string nomeArq;
+        cout << "Nomeie a saida: ";
+        cin >> nomeArq;
+        MapToXML(nomeArq);
     }
 }
 
@@ -205,9 +217,9 @@ ofstream& operator<<(ofstream& out, const vector<vector<int>*> &matrix){
     return out;
 }
 
-void MapComponents::MapToXML(){
+void MapComponents::MapToXML(string nomeArq){
     ofstream mapFile;
-    mapFile.open("leveldata.xml");
+    mapFile.open(nomeArq);
     mapFile << gameMap;
 
     mapFile.close();

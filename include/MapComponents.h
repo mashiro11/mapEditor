@@ -15,6 +15,7 @@ using std::vector;
 using std::cout;
 using std::endl;
 using std::ofstream;
+using std::cin;
 
 class MapObject;
 class MapComponents
@@ -28,15 +29,17 @@ class MapComponents
         static unsigned int GetMapObjNum();
         static void LoadComponents();
         static void SetGridSize(int w, int h);
-        static void Show();
+        static void Show(int dt = 0);
         static void LoadMapMatrix();
         static void PrintMapMatrix();
-        static void MapToXML();
+        static void MapToXML(string nomeArq);
 
     private:
         static vector<MapObject*> mapObjects;
-        static Grid grid;
+        static Grid gridMap;
+        static Grid gridMenu;
         static vector<vector<int>*> gameMap;
+        static int origin;
 
 };
 

@@ -39,8 +39,16 @@ bool MapObject::MouseInside(){
     else return false;
 }
 
-void MapObject::Update(){
+void MapObject::Update(int dt){
     if(type == "copy"){//HARDCOOOOODED
+        if(InputHandler::GetKey() == SDLK_LEFT){
+            x -= dt;
+            sp.SetX(sp.GetX()-dt);
+        }
+        if(InputHandler::GetKey() == SDLK_RIGHT){
+            x += dt;
+            sp.SetX(sp.GetX()+dt);
+        }
         if(grab){
             x = InputHandler::GetMouseX()/GetWidth() * GetWidth();
             y = InputHandler::GetMouseY()/GetHeight() * GetHeight();
