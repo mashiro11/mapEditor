@@ -35,7 +35,7 @@ int main(int argc, char** argv){
                 if(speed < 1) speed = 1;
                 cout << "movingspeed = " << speed << endl;
         }
-        MapComponents::Show(32*speed);
+        MapComponents::Show(GRID_W_H*speed);
         Window::Render();
     }
     Window::Finish();

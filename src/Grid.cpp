@@ -34,11 +34,11 @@ void Grid::Render(){
 void Grid::Update(int dt){
     if(InputHandler::GetKey() == SDLK_LEFT){
             x -= dt;
-            if(x < 0) x += 32;
+            if(x < 0) x += GRID_W_H;
     }
     if(InputHandler::GetKey() == SDLK_RIGHT){
             x += dt;
-            if(x > 32) x -= 32;
+            if(x > GRID_W_H) x -= GRID_W_H;
     }
 
 

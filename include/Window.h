@@ -1,8 +1,11 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+
+#define GRID_W_H 32
 #define WINDOW_WIDTH 1024
-#define WINDOW_HEIGHT 32*(12+3)
+#define WINDOW_HEIGHT GRID_W_H*(12+3)
+
 
 #include <iostream>
 #include <SDL.h>
