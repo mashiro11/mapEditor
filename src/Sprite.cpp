@@ -59,9 +59,11 @@ void Sprite::SetY(int y){
     imgRect.y = y;
 }
 
-void Sprite::Clip(int w, int h){
+void Sprite::Clip(int w, int h, int x, int y){
     imgRect.w = srcRect.w = w;
     imgRect.h = srcRect.h = h;
+    srcRect.x = x;
+    srcRect.y = y;
 }
 void Sprite::Resize(int percentx, int percenty){
     if(percenty == 100){

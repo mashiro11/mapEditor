@@ -16,6 +16,13 @@ using std::unique_ptr;
 #define TILEDIM     64
 
 int main(int argc, char** argv){
+    /*
+        Mensagens:
+    */
+    cout << "Para pegar um tile: clique no tile" << endl;
+    cout << "Para soltar o tile: s" << endl;
+    cout << "Para salvar um mapa especifico: p" << endl;
+    cout << "Para terminar e exportar o mapa: enter" << endl;
     Window::Start();
 
     MapComponents::LoadComponents();

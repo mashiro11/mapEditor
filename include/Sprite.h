@@ -24,7 +24,7 @@ class Sprite
         void SetX(int x);
         void SetY(int y);
         void Resize(int percentx, int percenty = 100);
-        void Clip(int w, int h);
+        void Clip(int w, int h, int x = 0, int y = 0);
 
     protected:
 

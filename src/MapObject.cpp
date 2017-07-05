@@ -77,8 +77,14 @@ void MapObject::Update(int dt){
             temp->SetGrab(true);
             temp->SetType("copy");
             temp->SetStatus("selected");
-            if(temp->GetWidth() > 64){
-                temp->Clip(64,64);
+            if(this->code != 30){//codigo da moeda pulando
+                if(temp->GetWidth() > 64){
+                    temp->Clip(64,64);
+                }
+            }else{
+                if(temp->GetWidth() > 64){
+                    temp->Clip(64,64, 0, 64);
+                }
             }
             temp->Resize(50);
             MapComponents::AddMapObject(temp);
@@ -91,8 +97,8 @@ void MapObject::Resize(int percentx, int percenty ){
     sp.Resize(percentx, percenty);
 }
 
-void MapObject::Clip(int w, int h){
-    sp.Clip(w, h);
+void MapObject::Clip(int w, int h, int x, int y){
+    sp.Clip(w, h, x, y);
 }
 
 void MapObject::SetGrab(bool grab){

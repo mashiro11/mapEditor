@@ -40,53 +40,6 @@ unsigned int MapComponents::GetMapObjNum(){
     return mapObjects.size();
 }
 
-void MapComponents::LoadComponents(){
-    int i = 0;
-    LoadMapMatrix();
-    AddMapObject(new MapObject("img/block1.png", i, 0, 21)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/brick1.png", i, 0, 2)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/bush-left1.png", i, 0, 8)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/bush-mid1.png", i, 0, 9)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/bush-right1.png", i, 0, 10)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/cloud-bottom-left1.png", i, 0, 14)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/cloud-bottom-mid1.png", i, 0, 15)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/cloud-bottom-right1.png", i, 0, 16)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/cloud-left1.png", i, 0, 11)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/cloud-mid1.png", i, 0, 12)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/cloud-right1.png", i, 0, 13)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/coin.png", i, 0, 29)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/coinbounce.png", i, 0, 30)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/coinbox1.png", i, 0, 3)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/emptycoinbox1.png", i, 0, 25)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/flag.png", i, 0, 26)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/goomba1.png", i, 0, 50)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/grass1.png", i, 0, 22)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/hill-left1.png", i, 0, 4)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/hill-mid1.png", i, 0, 5)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/hill-right1.png", i, 0, 6)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/hill-top1.png", i, 0, 7)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/koopatroopa1.png", i, 0, 51)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/pipe-bottom-left1.png", i, 0, 19)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/pipe-bottom-right1.png", i, 0, 20)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/pipe-top-left1.png", i, 0, 17)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/pipe-top-right1.png", i, 0, 18)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/pole1.png", i, 0, 23)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/poletop.png", i, 0, 27)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/rock1.png", i, 0, 1)); i += GRID_W_H;
-    AddMapObject(new MapObject("img/block1.png", i, 0, 24)); i += GRID_W_H;
-    //AddMapObject(new MapObject("img/sky1.png", i, 0, 0));
-
-    XMLHeader();
-    for(int i = 0; i < MAP_LENGHT; i++){
-        MapObject* tmp = new MapObject("img/rock1.png", i*GRID_W_H, (MAP_HEIGHT+2)*GRID_W_H, 1);
-        tmp->SetType("copy");
-        AddMapObject(tmp);
-        gameMap[MAP_HEIGHT-1]->at(i) = 1;
-    }
-    gridMenu.SetGridColor(0xff, 0, 0);
-    gridMenu.SetDimensions(GRID_W_H, GRID_W_H, 0, 0, WINDOW_WIDTH, GRID_W_H*3);
-}
-
 void MapComponents::SetGridSize(int w, int h){
     //gridMap.SetDimensions(w, h);
     gridMap.SetDimensions(w, h, 0, GRID_W_H*3, WINDOW_WIDTH, WINDOW_HEIGHT - GRID_W_H*3);
@@ -115,20 +68,40 @@ void MapComponents::Show(int dt){
         }
     }
     if(InputHandler::GetKey() == SDLK_p){
-        PrintMapMatrix();
+        //PrintMapMatrix();
         cout << "Numero do mapa: ";
         int num;
         cin >> num;
-        SaveMap(gameMap, num);
-        cout << newMapsOutput[num];
+        cout << "Tempo da fase: ";
+        int time;
+        cin >> time;
+        cout << "Permitido ir para esquerda? s/n: ";
+        string irEsquerda;
+        cin >> irEsquerda;
+        (irEsquerda == "s")? irEsquerda = "true": irEsquerda = "false";
+        SaveMap(gameMap, num, time, irEsquerda);
+
+        //cout << newMapsOutput[num];
         currentLevel++;
         RewindMap(gameMap);
         ClearMap();
     }
     if(InputHandler::GetKey() == SDLK_RETURN){
-        string nomeArq;
-        cout << "Nomeie a saida: ";
-        cin >> nomeArq;
+        cout << "Numero do mapa: ";
+        int num;
+        cin >> num;
+        cout << "Tempo da fase: ";
+        int time;
+        cin >> time;
+        cout << "Permitido ir para esquerda? s/n: ";
+        string irEsquerda;
+        cin >> irEsquerda;
+        (irEsquerda == "s")? irEsquerda = "true": irEsquerda = "false";
+        SaveMap(gameMap, num, time, irEsquerda);
+        string nomeArq("leveldata.xml");
+        cout << "Saida salva em: leveldata.xml";
+        //cout << "Nomeie a saida: ";
+        //cin >> nomeArq;
         MapToXML(nomeArq);
     }
 }
@@ -151,14 +124,95 @@ void MapComponents::PrintMapMatrix(){
     }
 }
 
-void MapComponents::SaveMap(const vector<vector<int>*> &matrix, int i){
-    newMapsOutput[i] = MapToString(gameMap, i);
+void MapComponents::SaveMap(const vector<vector<int>*> &matrix, int i, int time, string irEsquerda){
+    newMapsOutput[i] = MapToString(gameMap, i, time, irEsquerda);
 }
 
 void MapComponents::ClearMap(){
     for(unsigned int i = mapObjects.size()-1; i > 30 + MAP_LENGHT ;i--){
         mapObjects.erase(mapObjects.begin()+i);
     }
+}
+
+void MapComponents::XMLFooter(){
+    unsigned int i = newMapsOutput.size();
+
+    string temp = "</levels>\n";
+    temp += "</levelData>\n";
+    newMapsOutput[i] = temp;
+}
+
+string MapComponents::MapToString(const vector<vector<int>*> &matrix, int level, int time, string irEsquerda){
+    string temp = "<level id='" + patch::to_string(level) + "'>\n";
+    temp += "<player startrow='10' startcol='4' facing='right'/>\n";
+
+    temp += "<tilemap rows='" + patch::to_string(matrix.size()) +
+            "' cols='" + patch::to_string(matrix[0]->size()) +
+            "' bgcolor='5C94FC' time='"  + patch::to_string(time) +
+            "' goLeft='" + irEsquerda + "'>\n";
+    temp += "<rows>\n";
+    for(unsigned int i = 0; i < matrix.size(); i++){
+        temp += "<row>";
+        for(unsigned int j = 0; j < matrix[i]->size(); j++){
+            temp += patch::to_string(matrix[i]->at(j)) +( (j == matrix[i]->size()-1)?"":"," );
+        }
+        temp += "</row>\n";
+    }
+    temp += "</rows>\n";
+    temp += "</tilemap>\n";
+
+    temp += "</level>\n";
+    return temp;
+}
+
+ofstream& operator<<(ofstream& out, const vector<vector<int>*> &matrix){
+
+    //out << "<levels>" << endl;
+    out << "<level id='" << MapComponents::currentLevel << "'>" << endl;
+    out << "<player startrow='10' startcol='4' facing='right' />" << endl;
+
+    out << "<tilemap rows='" << matrix.size() << "' cols='" << matrix[0]->size() << "' bgcolor='5C94FC'>"<< endl;
+    out << "    <rows>";
+    for(unsigned int i = 0; i < matrix.size(); i++){
+        out << "        <row>";
+        for(unsigned int j = 0; j < matrix[i]->size(); j++){
+            out << matrix[i]->at(j) <<( (j == matrix[i]->size()-1)?"":"," );
+        }
+        out << "</row>";
+    }
+    out << endl;
+    out << "    </rows>" << endl;
+    out << "</tilemap>" << endl;
+
+    out << "</level>" << endl;
+    out << "</levels>" << endl;
+    out << "</levelData>" << endl;
+
+    return out;
+}
+
+void MapComponents::MapToXML(string nomeArq){
+    XMLFooter();
+    ofstream mapFile;
+    mapFile.open(nomeArq);
+    for(map<int, string>::iterator it = newMapsOutput.begin(); it != newMapsOutput.end(); it++){
+        mapFile << it->second;
+    }
+    mapFile.close();
+}
+
+void MapComponents::RewindMap(vector<vector<int>*> &matrix){
+    for(unsigned int i = 0; i < matrix.size() - 1; i++){
+        for(unsigned int j = 0; j < matrix[i]->size(); j++){
+            matrix[i]->at(j) = 0;
+        }
+    }
+    for(unsigned int j = 0; j < matrix[matrix.size() - 1]->size(); j++){
+            matrix[matrix.size() - 1]->at(j) = 1;
+    }
+    //Por causa de uma gambiarra no codigo do jogo do mario
+    gameMap[MAP_HEIGHT - 2]->at(0) = 30;
+    gameMap[MAP_HEIGHT - 1]->at(0) = 25;
 }
 
 void MapComponents::XMLHeader(){
@@ -215,81 +269,54 @@ void MapComponents::XMLHeader(){
     newMapsOutput[0] += "<levels>\n";
 }
 
-void MapComponents::XMLFooter(){
-    unsigned int i = newMapsOutput.size();
+void MapComponents::LoadComponents(){
+    int i = 0;
+    LoadMapMatrix();
+    AddMapObject(new MapObject("img/block1.png", i, 0, 21)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/brick1.png", i, 0, 2)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/bush-left1.png", i, 0, 8)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/bush-mid1.png", i, 0, 9)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/bush-right1.png", i, 0, 10)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/cloud-bottom-left1.png", i, 0, 14)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/cloud-bottom-mid1.png", i, 0, 15)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/cloud-bottom-right1.png", i, 0, 16)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/cloud-left1.png", i, 0, 11)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/cloud-mid1.png", i, 0, 12)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/cloud-right1.png", i, 0, 13)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/coin.png", i, 0, 29)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/coinbounce.png", i, 0, 30)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/coinbox1.png", i, 0, 3)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/emptycoinbox1.png", i, 0, 25)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/flag.png", i, 0, 26)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/goomba1.png", i, 0, 50)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/grass1.png", i, 0, 22)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/hill-left1.png", i, 0, 4)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/hill-mid1.png", i, 0, 5)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/hill-right1.png", i, 0, 6)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/hill-top1.png", i, 0, 7)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/koopatroopa1.png", i, 0, 51)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/pipe-bottom-left1.png", i, 0, 19)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/pipe-bottom-right1.png", i, 0, 20)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/pipe-top-left1.png", i, 0, 17)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/pipe-top-right1.png", i, 0, 18)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/pole1.png", i, 0, 23)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/poletop.png", i, 0, 27)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/rock1.png", i, 0, 1)); i += GRID_W_H;
+    AddMapObject(new MapObject("img/block1.png", i, 0, 24)); i += GRID_W_H;
+    //AddMapObject(new MapObject("img/sky1.png", i, 0, 0));
 
-    string temp = "</levels>\n";
-    temp += "</levelData>\n";
-    newMapsOutput[i] = temp;
-}
-
-string MapComponents::MapToString(const vector<vector<int>*> &matrix, int level){
-    string temp = "<level id='" + patch::to_string(level) + "'>\n";
-    temp += "<player startrow='10' startcol='4' facing='right' />\n";
-
-    temp += "<tilemap rows='" + patch::to_string(matrix.size()) + "' cols='" + patch::to_string(matrix[0]->size()) + "' bgcolor='5C94FC'>\n";
-    temp += "<rows>\n";
-    for(unsigned int i = 0; i < matrix.size(); i++){
-        temp += "<row>";
-        for(unsigned int j = 0; j < matrix[i]->size(); j++){
-            temp += patch::to_string(matrix[i]->at(j)) +( (j == matrix[i]->size()-1)?"":"," );
-        }
-        temp += "</row>\n";
+    XMLHeader();
+    //preenche previamente todo o chão
+    for(int i = 0; i < MAP_LENGHT; i++){
+        MapObject* tmp = new MapObject("img/rock1.png", i*GRID_W_H, (MAP_HEIGHT+2)*GRID_W_H, 1);
+        tmp->SetType("copy");
+        AddMapObject(tmp);
+        gameMap[MAP_HEIGHT-1]->at(i) = 1;
     }
-    temp += "</rows>\n";
-    temp += "</tilemap>\n";
+    //Por causa de uma gambiarra no codigo do jogo do mario
+    gameMap[MAP_HEIGHT - 2]->at(0) = 25;
+    gameMap[MAP_HEIGHT - 1]->at(0) = 30;
 
-    temp += "</level>\n";
-    return temp;
+    gridMenu.SetGridColor(0xff, 0, 0);
+    gridMenu.SetDimensions(GRID_W_H, GRID_W_H, 0, 0, WINDOW_WIDTH, GRID_W_H*3);
 }
-
-ofstream& operator<<(ofstream& out, const vector<vector<int>*> &matrix){
-
-    out << "<levels>" << endl;
-    out << "<level id='" << MapComponents::currentLevel << "'>" << endl;
-    out << "<player startrow='10' startcol='4' facing='right' />" << endl;
-
-    out << "<tilemap rows='" << matrix.size() << "' cols='" << matrix[0]->size() << "' bgcolor='5C94FC'>"<< endl;
-    out << "    <rows>";
-    for(unsigned int i = 0; i < matrix.size(); i++){
-        out << "        <row>";
-        for(unsigned int j = 0; j < matrix[i]->size(); j++){
-            out << matrix[i]->at(j) <<( (j == matrix[i]->size()-1)?"":"," );
-        }
-        out << "</row>";
-    }
-    out << endl;
-    out << "    </rows>" << endl;
-    out << "</tilemap>" << endl;
-
-    out << "</level>" << endl;
-    out << "</levels>" << endl;
-    out << "</levelData>" << endl;
-
-    return out;
-}
-
-void MapComponents::MapToXML(string nomeArq){
-    XMLFooter();
-    ofstream mapFile;
-    mapFile.open(nomeArq);
-    for(map<int, string>::iterator it = newMapsOutput.begin(); it != newMapsOutput.end(); it++){
-        mapFile << it->second;
-    }
-    //mapFile << newMapsOutput[0];
-    //mapFile << gameMap;
-
-    mapFile.close();
-}
-
-void MapComponents::RewindMap(vector<vector<int>*> &matrix){
-    for(unsigned int i = 0; i < matrix.size() - 1; i++){
-        for(unsigned int j = 0; j < matrix[i]->size(); j++){
-            matrix[i]->at(j) = 0;
-        }
-    }
-    for(unsigned int j = 0; j < matrix[matrix.size() - 1]->size(); j++){
-            matrix[matrix.size() - 1]->at(j) = 1;
-    }
-}
-

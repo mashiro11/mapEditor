@@ -25,7 +25,7 @@ class MapObject
         int GetY();
         bool MouseInside();
         void Resize(int percentx = 100, int percenty = 100);
-        void Clip(int w, int h);
+        void Clip(int w, int h, int x = 0, int y = 0);
         void SetGrab(bool grab);
         void SetType(string type);
         void SetStatus(string status);
