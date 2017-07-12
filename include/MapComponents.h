@@ -55,8 +55,8 @@ class MapComponents
         static int currentLevel;
         static void XMLHeader();
         static void XMLFooter();
-        static string MapToString(const vector<vector<int>*> &matrix, int level, int time, string irEsquerda);
-        static void SaveMap(const vector<vector<int>*> &matrix, int level, int time, string irEsquerda);
+        static string MapToString(const vector<vector<int>*> &matrix, int level, int time, int bgColor = 0x5C94FC , string irEsquerda = "false");
+        static void SaveMap(const vector<vector<int>*> &matrix, int level, int time, int bgColor = 0x5C94FC, string irEsquerda = "false");
         static void RewindMap(vector<vector<int>*> &matrix);
         static void ClearMap();
 

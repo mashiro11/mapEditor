@@ -41,11 +41,11 @@ bool MapObject::MouseInside(){
 
 void MapObject::Update(int dt){
     if(type == "copy"){//HARDCOOOOODED
-        if(InputHandler::GetKey() == SDLK_LEFT){
+        if(InputHandler::GetKey() == SDLK_RIGHT){
             x -= dt;
             sp.SetX(sp.GetX()-dt);
         }
-        if(InputHandler::GetKey() == SDLK_RIGHT){
+        if(InputHandler::GetKey() == SDLK_LEFT){
             x += dt;
             sp.SetX(sp.GetX()+dt);
         }

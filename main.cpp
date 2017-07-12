@@ -29,7 +29,7 @@ int main(int argc, char** argv){
     MapComponents::ConfigImages(TILEDIM);
     MapComponents::SetGridSize(MapComponents::GetObject(0)->GetWidth(), MapComponents::GetObject(0)->GetHeight());
     int speed = 1;
-    while(!SDL_QuitRequested()){
+    while(!SDL_QuitRequested() && !(InputHandler::GetKey() == SDLK_ESCAPE) ){
         Window::Clear();
         InputHandler::Update();
         if(InputHandler::GetKey() == SDLK_UP){

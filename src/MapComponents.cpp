@@ -46,8 +46,8 @@ void MapComponents::SetGridSize(int w, int h){
 }
 
 void MapComponents::Show(int dt){
-    if(InputHandler::GetKey() == SDLK_LEFT) origin += dt;
-    if(InputHandler::GetKey() == SDLK_RIGHT) origin -= dt;
+    if(InputHandler::GetKey() == SDLK_RIGHT) origin += dt;
+    if(InputHandler::GetKey() == SDLK_LEFT) origin -= dt;
 
     gridMap.Update(dt);
     gridMap.Render();
@@ -79,7 +79,18 @@ void MapComponents::Show(int dt){
         string irEsquerda;
         cin >> irEsquerda;
         (irEsquerda == "s")? irEsquerda = "true": irEsquerda = "false";
-        SaveMap(gameMap, num, time, irEsquerda);
+        cout << "Backgorund color? 1(preto)/2(azul)/3(insira hexa da cor): ";
+        int bgColor;
+        cin >> bgColor;
+        switch(bgColor){
+        case 1:
+            bgColor = 0x000000;
+            break;
+        case 2:
+            bgColor = 0x5C94FC;
+            break;
+        }
+        SaveMap(gameMap, num, time, bgColor, irEsquerda);
 
         //cout << newMapsOutput[num];
         currentLevel++;
@@ -97,7 +108,18 @@ void MapComponents::Show(int dt){
         string irEsquerda;
         cin >> irEsquerda;
         (irEsquerda == "s")? irEsquerda = "true": irEsquerda = "false";
-        SaveMap(gameMap, num, time, irEsquerda);
+        cout << "Backgorund color? 1(preto)/2(azul)/3(insira hexa da cor): ";
+        int bgColor;
+        cin >> bgColor;
+        switch(bgColor){
+        case 1:
+            bgColor = 0x000000;
+            break;
+        case 2:
+            bgColor = 0x5C94FC;
+            break;
+        }
+        SaveMap(gameMap, num, time, bgColor, irEsquerda);
         string nomeArq("leveldata.xml");
         cout << "Saida salva em: leveldata.xml";
         //cout << "Nomeie a saida: ";
@@ -124,8 +146,8 @@ void MapComponents::PrintMapMatrix(){
     }
 }
 
-void MapComponents::SaveMap(const vector<vector<int>*> &matrix, int i, int time, string irEsquerda){
-    newMapsOutput[i] = MapToString(gameMap, i, time, irEsquerda);
+void MapComponents::SaveMap(const vector<vector<int>*> &matrix, int i, int time, int bgColor, string irEsquerda){
+    newMapsOutput[i] = MapToString(gameMap, i, time, bgColor, irEsquerda);
 }
 
 void MapComponents::ClearMap(){
@@ -142,13 +164,14 @@ void MapComponents::XMLFooter(){
     newMapsOutput[i] = temp;
 }
 
-string MapComponents::MapToString(const vector<vector<int>*> &matrix, int level, int time, string irEsquerda){
+string MapComponents::MapToString(const vector<vector<int>*> &matrix, int level, int time, int bgColor, string irEsquerda){
     string temp = "<level id='" + patch::to_string(level) + "'>\n";
     temp += "<player startrow='10' startcol='4' facing='right'/>\n";
 
     temp += "<tilemap rows='" + patch::to_string(matrix.size()) +
             "' cols='" + patch::to_string(matrix[0]->size()) +
-            "' bgcolor='5C94FC' time='"  + patch::to_string(time) +
+            "' bgcolor='" + patch::to_string(bgColor) +
+            "' time='"  + patch::to_string(time) +
             "' goLeft='" + irEsquerda + "'>\n";
     temp += "<rows>\n";
     for(unsigned int i = 0; i < matrix.size(); i++){
