@@ -7,6 +7,7 @@ Grid MapComponents::gridMap;
 int MapComponents::origin = 0;
 int MapComponents::currentLevel = 1;
 map<int, string> MapComponents::newMapsOutput;
+xml_document<> MapComponents::doc;
 
 MapComponents::~MapComponents()
 {
@@ -125,6 +126,22 @@ void MapComponents::Show(int dt){
         //cout << "Nomeie a saida: ";
         //cin >> nomeArq;
         MapToXML(nomeArq);
+    }if(InputHandler::GetKey() == SDLK_r){
+        //Converter para o formato do parser de xml
+        ifstream enterMap;
+        enterMap.open("leveldata.xml", std::ifstream::in);
+        string aux, aux2;
+        while(!enterMap.eof()){
+            getline(enterMap, aux2);
+            aux += aux2;
+        }
+        char *c =(char*)malloc(sizeof(char)*aux.size());
+        strcpy(c, aux.c_str());
+        //FIM
+
+        doc.parse<0>(c);
+        free(c);
+        cout << doc.first_node()->name() << endl;
     }
 }
 
@@ -165,19 +182,19 @@ void MapComponents::XMLFooter(){
 }
 
 string MapComponents::MapToString(const vector<vector<int>*> &matrix, int level, int time, int bgColor, string irEsquerda){
-    string temp = "<level id='" + patch::to_string(level) + "'>\n";
+    string temp = "<level id='" + to_string(level) + "'>\n";
     temp += "<player startrow='10' startcol='4' facing='right'/>\n";
 
-    temp += "<tilemap rows='" + patch::to_string(matrix.size()) +
-            "' cols='" + patch::to_string(matrix[0]->size()) +
-            "' bgcolor='" + patch::to_string(bgColor) +
-            "' time='"  + patch::to_string(time) +
+    temp += "<tilemap rows='" + to_string(matrix.size()) +
+            "' cols='" + to_string(matrix[0]->size()) +
+            "' bgcolor='" + to_string(bgColor) +
+            "' time='"  + to_string(time) +
             "' goLeft='" + irEsquerda + "'>\n";
     temp += "<rows>\n";
     for(unsigned int i = 0; i < matrix.size(); i++){
         temp += "<row>";
         for(unsigned int j = 0; j < matrix[i]->size(); j++){
-            temp += patch::to_string(matrix[i]->at(j)) +( (j == matrix[i]->size()-1)?"":"," );
+            temp += to_string(matrix[i]->at(j)) +( (j == matrix[i]->size()-1)?"":"," );
         }
         temp += "</row>\n";
     }

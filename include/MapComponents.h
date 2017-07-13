@@ -6,6 +6,7 @@
 #include <fstream>
 #include <map>
 #include <string>
+#include "rapidxml.hpp"
 
 //  Correct to_string bug
 #include <sstream>
@@ -28,14 +29,17 @@ using std::cin;
 using std::map;
 using std::string;
 using std::ostringstream;
-
+using std::to_string;
+using std::ifstream;
+using namespace rapidxml;
+/*
 namespace patch{
     template <typename T> string to_string(const T& n){
         ostringstream stm;
         stm << n;
         return stm.str();
     }
-}
+}*/
 class MapObject;
 class MapComponents
 {
@@ -68,6 +72,7 @@ class MapComponents
         static Grid gridMenu;
         static vector<vector<int>*> gameMap;
         static int origin;
+        static xml_document<> doc;
 
 };
 
