@@ -73,6 +73,7 @@ class MapComponents
         static Grid gridMap;
         static Grid gridMenu;
         static GameMap gmap;
+        static vector<GameMap*> gmaps;
         static vector<vector<int>*> gameMap;
         static int origin;
         static xml_document<> doc;

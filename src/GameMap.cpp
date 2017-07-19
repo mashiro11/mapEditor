@@ -70,7 +70,6 @@ void GameMap::SetFromXML(string xmlDoc, int id){
     char *c =(char*)malloc(sizeof(char)*aux.size());
     strcpy(c, aux.c_str());
     //FIM
-
     doc.parse<0>(c);
     free(c);
 

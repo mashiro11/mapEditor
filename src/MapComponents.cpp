@@ -2,6 +2,7 @@
 
 vector<MapObject*> MapComponents::mapObjects;
 GameMap MapComponents::gmap(1, MAP_HEIGHT, MAP_LENGHT);
+vector<GameMap*> MapComponents::gmaps;
 vector<vector<int>*> MapComponents::gameMap;
 Grid MapComponents::gridMenu;
 Grid MapComponents::gridMap;
@@ -143,13 +144,10 @@ void MapComponents::Show(int dt){
         //ReadXML();
         ClearMap();
         gmap.SetFromXML("leveldata.xml", 1);
-        cout << gmap.GetRows() << endl;
-        cout << gmap.GetCols() << endl;
         for(unsigned int i = 0; i < gmap.GetRows(); i++ ){
             for(unsigned int j = 0; j < gmap.GetCols(); j++){
                 for(unsigned int k = 0; k < mapObjects.size(); k++){
                     if(mapObjects[k]->GetCode() == gmap.GetValue(i, j)){
-                        cout << "(" << i << "," << j << "): " << gmap.GetValue(i, j) << endl;
                         AddMapObject(mapObjects[k]->CreateCopy("placed", i, j));
                         break;
                     }
