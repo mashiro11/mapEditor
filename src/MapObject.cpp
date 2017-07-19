@@ -73,23 +73,34 @@ void MapObject::Update(int dt){
         }
     }else if(type == "menu"){
         if(MouseInside() && InputHandler::GetMouseLBState() == MOUSE_LBUTTON_PRESSED){
-            MapObject* temp = new MapObject(path, InputHandler::GetMouseX(), InputHandler::GetMouseY(), code);
-            temp->SetGrab(true);
-            temp->SetType("copy");
-            temp->SetStatus("selected");
-            if(this->code != 30){//codigo da moeda pulando
-                if(temp->GetWidth() > 64){
-                    temp->Clip(64,64);
-                }
-            }else{
-                if(temp->GetWidth() > 64){
-                    temp->Clip(64,64, 0, 64);
-                }
-            }
-            temp->Resize(50);
-            MapComponents::AddMapObject(temp);
+            MapComponents::AddMapObject(CreateCopy("selected"));
         }
     }
+}
+
+MapObject* MapObject::CreateCopy(string status, int row, int col){
+    MapObject* temp;
+    if(status == "selected"){
+        temp = new MapObject(path, InputHandler::GetMouseX(), InputHandler::GetMouseY(), code);
+        temp->SetGrab(true);
+    }
+    else{
+        temp = new MapObject(path, (col-1)*32 , (row+3)*32, code);//(-1 e +3 para compensar o menu de objetos e a gambiarra do bloco)
+        temp->SetGrab(false);
+    }
+    temp->SetType("copy");
+    temp->SetStatus(status);
+    if(this->code != 30){//codigo da moeda pulando
+        if(temp->GetWidth() > 64){
+            temp->Clip(64,64);
+        }
+    }else{
+        if(temp->GetWidth() > 64){
+            temp->Clip(64,64, 0, 64);
+        }
+    }
+    temp->Resize(50);
+    return temp;
 }
 
 

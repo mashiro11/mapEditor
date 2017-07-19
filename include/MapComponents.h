@@ -6,13 +6,14 @@
 #include <fstream>
 #include <map>
 #include <string>
+#include <windows.h> //for sleep
 #include "rapidxml.hpp"
 
-//  Correct to_string bug
 #include <sstream>
 
 #include "MapObject.h"
 #include "Grid.h"
+#include "GameMap.h"
 
 #define MAP_LENGHT  200
 #define MAP_HEIGHT  12
@@ -63,6 +64,7 @@ class MapComponents
         static void SaveMap(const vector<vector<int>*> &matrix, int level, int time, int bgColor = 0x5C94FC, string irEsquerda = "false");
         static void RewindMap(vector<vector<int>*> &matrix);
         static void ClearMap();
+        static void ReadXML();
 
     private:
 
@@ -70,6 +72,7 @@ class MapComponents
         static vector<MapObject*> mapObjects;
         static Grid gridMap;
         static Grid gridMenu;
+        static GameMap gmap;
         static vector<vector<int>*> gameMap;
         static int origin;
         static xml_document<> doc;

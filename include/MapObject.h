@@ -30,6 +30,7 @@ class MapObject
         void SetType(string type);
         void SetStatus(string status);
         string GetStatus();
+        MapObject* CreateCopy(string status = "placed", int row = 0, int col = 0);
 
         int GetCode();
 

@@ -1,6 +1,7 @@
 #include "MapComponents.h"
 
 vector<MapObject*> MapComponents::mapObjects;
+GameMap MapComponents::gmap(1, MAP_HEIGHT, MAP_LENGHT);
 vector<vector<int>*> MapComponents::gameMap;
 Grid MapComponents::gridMenu;
 Grid MapComponents::gridMap;
@@ -52,20 +53,32 @@ void MapComponents::Show(int dt){
 
     gridMap.Update(dt);
     gridMap.Render();
+
     gridMenu.Update();
     gridMenu.Render();
+
     for(unsigned int i = 0; i < mapObjects.size(); i++){
         mapObjects[i]->Update(dt);
         mapObjects[i]->Render();
+
         int ypos;
         ypos = mapObjects[i]->GetY() - GRID_W_H*3;
         if(mapObjects[i]->GetStatus() == "delete"){
-             if(ypos > 0)gameMap[ ypos/GRID_W_H ]->at( (mapObjects[i]->GetX()+origin)/GRID_W_H ) = 0;
+             if(ypos > 0){
+                    gameMap[ ypos/GRID_W_H ]->at( (mapObjects[i]->GetX()+origin)/GRID_W_H ) = 0;
+                    gmap.SetValue(ypos/GRID_W_H, (mapObjects[i]->GetX()+origin)/GRID_W_H, 0);
+             }
              mapObjects.erase(mapObjects.begin() + i);
         }else if(mapObjects[i]->GetStatus() == "selected"){
-            if(ypos > 0)gameMap[ ypos/GRID_W_H ]->at( (mapObjects[i]->GetX()+origin)/GRID_W_H ) = 0;
+            if(ypos > 0){
+                    gameMap[ ypos/GRID_W_H ]->at( (mapObjects[i]->GetX()+origin)/GRID_W_H ) = 0;
+                    gmap.SetValue(ypos/GRID_W_H, (mapObjects[i]->GetX()+origin)/GRID_W_H, 0);
+            }
         }else if(mapObjects[i]->GetStatus() == "placed"){
-            if(ypos > 0)gameMap[ ypos/GRID_W_H ]->at( (mapObjects[i]->GetX()+origin)/GRID_W_H ) = mapObjects[i]->GetCode();
+            if(ypos > 0){
+                    gameMap[ ypos/GRID_W_H ]->at( (mapObjects[i]->GetX()+origin)/GRID_W_H ) = mapObjects[i]->GetCode();
+                    gmap.SetValue(ypos/GRID_W_H, (mapObjects[i]->GetX()+origin)/GRID_W_H, mapObjects[i]->GetCode());
+            }
         }
     }
     if(InputHandler::GetKey() == SDLK_p){
@@ -127,21 +140,22 @@ void MapComponents::Show(int dt){
         //cin >> nomeArq;
         MapToXML(nomeArq);
     }if(InputHandler::GetKey() == SDLK_r){
-        //Converter para o formato do parser de xml
-        ifstream enterMap;
-        enterMap.open("leveldata.xml", std::ifstream::in);
-        string aux, aux2;
-        while(!enterMap.eof()){
-            getline(enterMap, aux2);
-            aux += aux2;
+        //ReadXML();
+        ClearMap();
+        gmap.SetFromXML("leveldata.xml", 1);
+        cout << gmap.GetRows() << endl;
+        cout << gmap.GetCols() << endl;
+        for(unsigned int i = 0; i < gmap.GetRows(); i++ ){
+            for(unsigned int j = 0; j < gmap.GetCols(); j++){
+                for(unsigned int k = 0; k < mapObjects.size(); k++){
+                    if(mapObjects[k]->GetCode() == gmap.GetValue(i, j)){
+                        cout << "(" << i << "," << j << "): " << gmap.GetValue(i, j) << endl;
+                        AddMapObject(mapObjects[k]->CreateCopy("placed", i, j));
+                        break;
+                    }
+                }
+            }
         }
-        char *c =(char*)malloc(sizeof(char)*aux.size());
-        strcpy(c, aux.c_str());
-        //FIM
-
-        doc.parse<0>(c);
-        free(c);
-        cout << doc.first_node()->name() << endl;
     }
 }
 
@@ -255,6 +269,24 @@ void MapComponents::RewindMap(vector<vector<int>*> &matrix){
     gameMap[MAP_HEIGHT - 1]->at(0) = 25;
 }
 
+void MapComponents::ReadXML(){
+    //Converter para o formato do parser de xml
+        ifstream enterMap;
+        enterMap.open("leveldata.xml", std::ifstream::in);
+        string aux, aux2;
+        while(!enterMap.eof()){
+            getline(enterMap, aux2);
+            aux += aux2;
+        }
+        char *c =(char*)malloc(sizeof(char)*aux.size());
+        strcpy(c, aux.c_str());
+        //FIM
+
+        doc.parse<0>(c);
+        free(c);
+        enterMap.close();
+}
+
 void MapComponents::XMLHeader(){
     newMapsOutput[0] = "<?xml version='1.0'?>\n";
     newMapsOutput[0] += "<levelData>\n";
@@ -343,7 +375,6 @@ void MapComponents::LoadComponents(){
     AddMapObject(new MapObject("img/poletop.png", i, 0, 27)); i += GRID_W_H;
     AddMapObject(new MapObject("img/rock1.png", i, 0, 1)); i += GRID_W_H;
     AddMapObject(new MapObject("img/block1.png", i, 0, 24)); i += GRID_W_H;
-    //AddMapObject(new MapObject("img/sky1.png", i, 0, 0));
 
     XMLHeader();
     //preenche previamente todo o chão
